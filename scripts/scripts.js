@@ -42,7 +42,7 @@ async function startup() {
     cameraVideo.play();
   }
 
-  function cameraTakePicture(width = 0, height = 0) {
+  async function cameraTakePicture(width = 0, height = 0) {
     // TODO: draw video frame to canvas
     const context = cameraCanvas.getContext("2d");
 
@@ -54,7 +54,14 @@ async function startup() {
     context.drawImage(cameraVideo, 0, 0, width, height);
 
     // dapatkan gambar canvas dalam bentuk data url dengan tipe image/png
-    return cameraCanvas.toDataURL("image/png");
+    // return cameraCanvas.toDataURL("image/png");
+
+    // dapatkan gambar canvas dalam bentuk blob
+    return await new Promise((resolve, reject) => {
+      cameraCanvas.toBlob((blob) => {
+        resolve(URL.createObjectURL(blob));
+      }, "image/png");
+    });
   }
 
   async function init() {
